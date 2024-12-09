@@ -12,44 +12,24 @@ use Psr\Http\Message\RequestInterface;
  */
 class CurlFormatter
 {
-    /**
-     * @var string
-     */
-    protected $command;
+    protected string $command;
 
-    /**
-     * @var int
-     */
-    protected $currentLineLength;
+    protected int $currentLineLength;
 
-    /**
-     * @var string[]
-     */
-    protected $options;
+    protected array $options;
 
-    /**
-     * @var int
-     */
-    protected $commandLineLength;
+    protected int $commandLineLength;
 
-    /**
-     * @param int $commandLineLength
-     */
-    function __construct($commandLineLength =  100)
+    function __construct(int $commandLineLength = 100)
     {
         $this->commandLineLength = $commandLineLength;
     }
 
-    /**
-     * @param RequestInterface $request
-     * @param array            $options
-     * @return string
-     */
-    public function format(RequestInterface $request, array $options = [])
+    public function format(RequestInterface $request, array $options = []): string
     {
-        $this->command           = 'curl';
+        $this->command = 'curl';
         $this->currentLineLength = strlen($this->command);
-        $this->options           = [];
+        $this->options = [];
 
         $this->extractArguments($request, $options);
         $this->addOptionsToCommand();
@@ -57,36 +37,28 @@ class CurlFormatter
         return $this->command;
     }
 
-    /**
-     * @param int $commandLineLength
-     */
-    public function setCommandLineLength($commandLineLength)
+    public function setCommandLineLength(int $commandLineLength): self
     {
         $this->commandLineLength = $commandLineLength;
+
+        return $this;
     }
 
-    /**
-     * @param $name
-     * @param null $value
-     */
-    protected function addOption($name, $value = null)
+    protected function addOption(string $name, mixed $value = null): self
     {
         if (isset($this->options[$name])) {
             if (!is_array($this->options[$name])) {
                 $this->options[$name] = (array)$this->options[$name];
             }
-
             $this->options[$name][] = $value;
         } else {
             $this->options[$name] = $value;
         }
 
+        return $this;
     }
 
-    /**
-     * @param $part
-     */
-    protected function addCommandPart($part)
+    protected function addCommandPart(string $part): self
     {
         $this->command .= ' ';
 
@@ -97,26 +69,24 @@ class CurlFormatter
 
         $this->command .= $part;
         $this->currentLineLength += strlen($part) + 2;
+
+        return $this;
     }
 
-    /**
-     * @param RequestInterface $request
-     */
-    protected function extractHttpMethodArgument(RequestInterface $request)
+    protected function extractHttpMethodArgument(RequestInterface $request): self
     {
-        if ('GET' !== $request->getMethod() ) {
+        if ('GET' !== $request->getMethod()) {
             if ('HEAD' === $request->getMethod()) {
                 $this->addOption('-head');
             } else {
                 $this->addOption('X', $request->getMethod());
             }
         }
+
+        return $this;
     }
 
-    /**
-     * @param RequestInterface $request
-     */
-    protected function extractBodyArgument(RequestInterface $request)
+    protected function extractBodyArgument(RequestInterface $request): self
     {
         $body = $request->getBody();
 
@@ -133,35 +103,33 @@ class CurlFormatter
 
         if ($contents) {
             // clean input of null bytes
-             $contents = str_replace(chr(0), '', $contents);
+            $contents = str_replace(chr(0), '', $contents);
             $this->addOption('d', escapeshellarg($contents));
         }
 
         //if get request has data Add G otherwise curl will make a post request
-        if (!empty($this->options['d']) && ('GET' === $request->getMethod())){
+        if (!empty($this->options['d']) && ('GET' === $request->getMethod())) {
             $this->addOption('G');
         }
+
+        return $this;
     }
 
-    /**
-     * @param RequestInterface $request
-     * @param array            $options
-     */
-    protected function extractCookiesArgument(RequestInterface $request, array $options)
+    protected function extractCookiesArgument(RequestInterface $request, array $options): self
     {
         if (!isset($options['cookies']) || !$options['cookies'] instanceof CookieJarInterface) {
-            return;
+            return $this;
         }
 
         $values = [];
         $scheme = $request->getUri()->getScheme();
-        $host   = $request->getUri()->getHost();
-        $path   = $request->getUri()->getPath();
+        $host = $request->getUri()->getHost();
+        $path = $request->getUri()->getPath();
 
         /** @var SetCookie $cookie */
         foreach ($options['cookies'] as $cookie) {
             if ($cookie->matchesPath($path) && $cookie->matchesDomain($host) &&
-                ! $cookie->isExpired() && ( ! $cookie->getSecure() || $scheme == 'https')) {
+                !$cookie->isExpired() && (!$cookie->getSecure() || $scheme == 'https')) {
 
                 $values[] = $cookie->getName() . '=' . $cookie->getValue();
             }
@@ -170,12 +138,11 @@ class CurlFormatter
         if ($values) {
             $this->addOption('b', escapeshellarg(implode('; ', $values)));
         }
+
+        return $this;
     }
 
-    /**
-     * @param RequestInterface $request
-     */
-    protected function extractHeadersArgument(RequestInterface $request)
+    protected function extractHeadersArgument(RequestInterface $request): self
     {
         foreach ($request->getHeaders() as $name => $header) {
             if ('host' === strtolower($name) && $header[0] === $request->getUri()->getHost()) {
@@ -191,9 +158,11 @@ class CurlFormatter
                 $this->addOption('H', escapeshellarg("{$name}: {$headerValue}"));
             }
         }
+
+        return $this;
     }
 
-    protected function addOptionsToCommand()
+    protected function addOptionsToCommand(): self
     {
         ksort($this->options);
 
@@ -208,26 +177,23 @@ class CurlFormatter
                 }
             }
         }
+
+        return $this;
     }
 
-    /**
-     * @param RequestInterface $request
-     * @param array            $options
-     */
-    protected function extractArguments(RequestInterface $request, array $options)
+    protected function extractArguments(RequestInterface $request, array $options): self
     {
         $this->extractHttpMethodArgument($request);
         $this->extractBodyArgument($request);
         $this->extractCookiesArgument($request, $options);
         $this->extractHeadersArgument($request);
         $this->extractUrlArgument($request);
+
+        return $this;
     }
 
-    /**
-     * @param RequestInterface $request
-     */
-    protected function extractUrlArgument(RequestInterface $request)
+    protected function extractUrlArgument(RequestInterface $request) : self
     {
-        $this->addCommandPart(escapeshellarg((string)$request->getUri()->withFragment('')));
+        return $this->addCommandPart(escapeshellarg((string)$request->getUri()->withFragment('')));
     }
 }

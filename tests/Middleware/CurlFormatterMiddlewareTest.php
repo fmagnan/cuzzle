@@ -1,18 +1,24 @@
 <?php
 
+namespace Namshi\Cuzzle\Test\Middleware;
+
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Handler\MockHandler;
 use Namshi\Cuzzle\Middleware\CurlFormatterMiddleware;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
-class CurlFormatterMiddlewareTest extends \PHPUnit\Framework\TestCase
+class CurlFormatterMiddlewareTest extends TestCase
 {
-    public function testGet()
+    #[Test]
+    public function get() : void
     {
         $mock = new MockHandler([new Response(204)]);
         $handler = HandlerStack::create($mock);
-        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $logger = $this->createMock(LoggerInterface::class);
 
         $logger
             ->expects($this->once())
@@ -22,6 +28,6 @@ class CurlFormatterMiddlewareTest extends \PHPUnit\Framework\TestCase
         $handler->after('cookies', new CurlFormatterMiddleware($logger));
         $client = new Client(['handler' => $handler]);
 
-        $client->get('http://google.com');
+        $client->get('https://google.com');
     }
 }

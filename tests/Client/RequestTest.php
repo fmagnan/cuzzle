@@ -1,73 +1,71 @@
 <?php
 
-namespace Client;
+namespace Namshi\Cuzzle\Test\Client;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
-use GuzzleHttp\Psr7;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Utils;
 use Namshi\Cuzzle\Formatter\CurlFormatter;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
-class RequestTest extends \PHPUnit\Framework\TestCase
+class RequestTest extends TestCase
 {
-    /**
-     * @var CurlFormatter
-     */
-    protected $curlFormatter;
+    private CurlFormatter $curlFormatter;
 
     public function setUp(): void
     {
-        $this->client        = new Client();
         $this->curlFormatter = new CurlFormatter();
     }
 
-    public function testGetWithCookies()
+    public function testGetWithCookies() : void
     {
         $request = new Request('GET', 'http://local.example');
         $jar = CookieJar::fromArray(['Foo' => 'Bar', 'identity' => 'xyz'], 'local.example');
-        $curl    = $this->curlFormatter->format($request, ['cookies' => $jar]);
+        $curl = $this->curlFormatter->format($request, ['cookies' => $jar]);
 
         $this->assertStringNotContainsString("-H 'Host: local.example'", $curl);
         $this->assertStringContainsString("-b 'Foo=Bar; identity=xyz'", $curl);
     }
 
-    public function testPOST()
+    #[Test]
+    public function post() : void
     {
-        $request = new Request('POST', 'http://local.example', [], Psr7\stream_for('foo=bar&hello=world'));
-        $curl    = $this->curlFormatter->format($request);
+        $request = new Request('POST', 'http://local.example', [], Utils::streamFor('foo=bar&hello=world'));
+        $curl = $this->curlFormatter->format($request);
 
         $this->assertStringContainsString("-d 'foo=bar&hello=world'", $curl);
     }
 
-    public function testPUT()
+    public function testPUT() : void
     {
-        $request = new Request('PUT', 'http://local.example', [], Psr7\stream_for('foo=bar&hello=world'));
-        $curl    = $this->curlFormatter->format($request);
+        $request = new Request('PUT', 'http://local.example', [], Utils::streamFor('foo=bar&hello=world'));
+        $curl = $this->curlFormatter->format($request);
 
         $this->assertStringContainsString("-d 'foo=bar&hello=world'", $curl);
         $this->assertStringContainsString('-X PUT', $curl);
     }
 
-    public function testDELETE()
+    public function testDELETE() : void
     {
         $request = new Request('DELETE', 'http://local.example');
-        $curl    = $this->curlFormatter->format($request);
+        $curl = $this->curlFormatter->format($request);
 
         $this->assertStringContainsString('-X DELETE', $curl);
     }
 
-    public function testHEAD()
+    public function testHEAD() : void
     {
         $request = new Request('HEAD', 'http://local.example');
-        $curl    = $this->curlFormatter->format($request);
+        $curl = $this->curlFormatter->format($request);
 
         $this->assertStringContainsString("curl 'http://local.example' --head", $curl);
     }
 
-    public function testOPTIONS()
+    public function testOPTIONS() : void
     {
         $request = new Request('OPTIONS', 'http://local.example');
-        $curl    = $this->curlFormatter->format($request);
+        $curl = $this->curlFormatter->format($request);
 
         $this->assertStringContainsString('-X OPTIONS', $curl);
     }

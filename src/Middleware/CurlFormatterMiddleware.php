@@ -8,17 +8,15 @@ use Psr\Http\Message\RequestInterface;
 
 /**
  * Class CurlFormatterMiddleware middleware
- * it allow to attach the CurlFormatter to a Guzzle Request
+ * it allows to attach the CurlFormatter to a Guzzle Request
  *
  * @package Namshi\Cuzzle\Middleware
  */
 class CurlFormatterMiddleware
 {
-    protected $logger;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(private LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     public function __invoke(callable $handler)

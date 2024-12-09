@@ -1,21 +1,23 @@
 <?php
 
+namespace Namshi\Cuzzle\Test\Formatter;
+
+use GuzzleHttp\Psr7\Utils;
 use Namshi\Cuzzle\Formatter\CurlFormatter;
 use GuzzleHttp\Psr7\Request;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
-class CurlFormatterTest extends \PHPUnit\Framework\TestCase
+class CurlFormatterTest extends TestCase
 {
-    /**
-     * @var CurlFormatter
-     */
-    protected $curlFormatter;
+    protected CurlFormatter $curlFormatter;
 
     public function setUp(): void
     {
         $this->curlFormatter = new CurlFormatter();
     }
 
-    public function testMultiLineDisabled()
+    public function testMultiLineDisabled() : void
     {
         $this->curlFormatter->setCommandLineLength(10);
 
@@ -25,7 +27,7 @@ class CurlFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(substr_count($curl, "\n"), 2);
     }
 
-    public function testSkipHostInHeaders()
+    public function testSkipHostInHeaders() : void
     {
         $request = new Request('GET', 'http://example.local');
         $curl    = $this->curlFormatter->format($request);
@@ -33,7 +35,7 @@ class CurlFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("curl 'http://example.local'", $curl);
     }
 
-    public function testSimpleGET()
+    public function testSimpleGET() : void
     {
         $request = new Request('GET', 'http://example.local');
         $curl    = $this->curlFormatter->format($request);
@@ -41,7 +43,7 @@ class CurlFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("curl 'http://example.local'", $curl);
     }
 
-    public function testSimpleGETWithHeader()
+    public function testSimpleGETWithHeader() : void
     {
         $request = new Request('GET', 'http://example.local', ['foo' => 'bar']);
         $curl    = $this->curlFormatter->format($request);
@@ -49,7 +51,7 @@ class CurlFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("curl 'http://example.local' -H 'foo: bar'", $curl);
     }
 
-    public function testSimpleGETWithMultipleHeader()
+    public function testSimpleGETWithMultipleHeader() : void
     {
         $request = new Request('GET', 'http://example.local', ['foo' => 'bar', 'Accept-Encoding' => 'gzip,deflate,sdch']);
         $curl    = $this->curlFormatter->format($request);
@@ -57,7 +59,7 @@ class CurlFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("curl 'http://example.local' -H 'foo: bar' -H 'Accept-Encoding: gzip,deflate,sdch'", $curl);
     }
 
-    public function testGETWithQueryString()
+    public function testGETWithQueryString() : void
     {
         $request = new Request('GET', 'http://example.local?foo=bar');
         $curl    = $this->curlFormatter->format($request);
@@ -69,7 +71,7 @@ class CurlFormatterTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals("curl 'http://example.local?foo=bar'", $curl);
 
-        $body = \GuzzleHttp\Psr7\stream_for(http_build_query(['foo' => 'bar', 'hello' => 'world'], '', '&'));
+        $body = Utils::streamFor(http_build_query(['foo' => 'bar', 'hello' => 'world'], '', '&'));
 
         $request = new Request('GET', 'http://example.local', [], $body);
         $curl    = $this->curlFormatter->format($request);
@@ -77,9 +79,9 @@ class CurlFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("curl 'http://example.local' -G  -d 'foo=bar&hello=world'", $curl);
     }
 
-    public function testPOST()
+    public function testPOST() : void
     {
-        $body = \GuzzleHttp\Psr7\stream_for(http_build_query(['foo' => 'bar', 'hello' => 'world'], '', '&'));
+        $body = Utils::streamFor(http_build_query(['foo' => 'bar', 'hello' => 'world'], '', '&'));
 
         $request = new Request('POST', 'http://example.local', [], $body);
         $curl    = $this->curlFormatter->format($request);
@@ -88,7 +90,7 @@ class CurlFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString(" -G ", $curl);
     }
 
-    public function testHEAD()
+    public function testHEAD() : void
     {
         $request = new Request('HEAD', 'http://example.local');
         $curl    = $this->curlFormatter->format($request);
@@ -96,7 +98,7 @@ class CurlFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString("--head", $curl);
     }
 
-    public function testOPTIONS()
+    public function testOPTIONS() : void
     {
         $request = new Request('OPTIONS', 'http://example.local');
         $curl    = $this->curlFormatter->format($request);
@@ -104,7 +106,7 @@ class CurlFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString("-X OPTIONS", $curl);
     }
 
-    public function testDELETE()
+    public function testDELETE() : void
     {
         $request = new Request('DELETE', 'http://example.local/users/4');
         $curl    = $this->curlFormatter->format($request);
@@ -112,18 +114,18 @@ class CurlFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString("-X DELETE", $curl);
     }
 
-    public function testPUT()
+    public function testPUT() : void
     {
-        $request = new Request('PUT', 'http://example.local', [], \GuzzleHttp\Psr7\stream_for('foo=bar&hello=world'));
+        $request = new Request('PUT', 'http://example.local', [], Utils::streamFor('foo=bar&hello=world'));
         $curl    = $this->curlFormatter->format($request);
 
         $this->assertStringContainsString("-d 'foo=bar&hello=world'", $curl);
         $this->assertStringContainsString("-X PUT", $curl);
     }
 
-    public function testProperBodyReading()
+    public function testProperBodyReading() : void
     {
-        $request = new Request('PUT', 'http://example.local', [], \GuzzleHttp\Psr7\stream_for('foo=bar&hello=world'));
+        $request = new Request('PUT', 'http://example.local', [], Utils::streamFor('foo=bar&hello=world'));
         $request->getBody()->getContents();
 
         $curl    = $this->curlFormatter->format($request);
@@ -132,32 +134,16 @@ class CurlFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString("-X PUT", $curl);
     }
 
-    /**
-     * @dataProvider getHeadersAndBodyData
-     */
-    public function testExtractBodyArgument($headers, $body)
+    #[Test]
+    public function extractBodyArgument() : void
     {
         // clean input of null bytes
-        $body = str_replace(chr(0), '', $body);
-        $request = new Request('POST', 'http://example.local', $headers, \GuzzleHttp\Psr7\stream_for($body));
+        $body = str_replace(chr(0), '', chr(0) . 'foo=bar&hello=world');
+        $request = new Request('POST', 'http://example.local', ['X-Foo' => 'Bar'], Utils::streamFor($body));
 
         $curl = $this->curlFormatter->format($request);
 
         $this->assertStringContainsString('foo=bar&hello=world', $curl);
     }
 
-    /**
-     * The data provider for testExtractBodyArgument
-     *
-     * @return array
-     */
-    public function getHeadersAndBodyData()
-    {
-        return [
-            [
-                ['X-Foo' => 'Bar'],
-                chr(0) . 'foo=bar&hello=world',
-            ],
-        ];
-    }
 }
