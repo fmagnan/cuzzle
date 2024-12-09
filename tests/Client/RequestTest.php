@@ -38,7 +38,8 @@ class RequestTest extends TestCase
         $this->assertStringContainsString("-d 'foo=bar&hello=world'", $curl);
     }
 
-    public function testPUT(): void
+    #[Test]
+    public function put(): void
     {
         $request = new Request('PUT', 'http://local.example', [], Utils::streamFor('foo=bar&hello=world'));
         $curl = $this->curlFormatter->format($request);
@@ -47,7 +48,8 @@ class RequestTest extends TestCase
         $this->assertStringContainsString('-X PUT', $curl);
     }
 
-    public function testDELETE(): void
+    #[Test]
+    public function delete(): void
     {
         $request = new Request('DELETE', 'http://local.example');
         $curl = $this->curlFormatter->format($request);
@@ -55,7 +57,8 @@ class RequestTest extends TestCase
         $this->assertStringContainsString('-X DELETE', $curl);
     }
 
-    public function testHEAD(): void
+    #[Test]
+    public function head(): void
     {
         $request = new Request('HEAD', 'http://local.example');
         $curl = $this->curlFormatter->format($request);
@@ -63,7 +66,8 @@ class RequestTest extends TestCase
         $this->assertStringContainsString("curl 'http://local.example' --head", $curl);
     }
 
-    public function testOPTIONS(): void
+    #[Test]
+    public function options(): void
     {
         $request = new Request('OPTIONS', 'http://local.example');
         $curl = $this->curlFormatter->format($request);

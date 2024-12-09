@@ -17,7 +17,8 @@ class CurlFormatterTest extends TestCase
         $this->curlFormatter = new CurlFormatter();
     }
 
-    public function testMultiLineDisabled(): void
+    #[Test]
+    public function multiline_is_disabled(): void
     {
         $this->curlFormatter->setCommandLineLength(10);
 
@@ -27,7 +28,8 @@ class CurlFormatterTest extends TestCase
         $this->assertEquals(substr_count($curl, "\n"), 2);
     }
 
-    public function testSkipHostInHeaders(): void
+    #[Test]
+    public function skip_host_in_headers(): void
     {
         $request = new Request('GET', 'http://example.local');
         $curl = $this->curlFormatter->format($request);
@@ -35,7 +37,8 @@ class CurlFormatterTest extends TestCase
         $this->assertEquals("curl 'http://example.local'", $curl);
     }
 
-    public function testSimpleGET(): void
+    #[Test]
+    public function simple_get(): void
     {
         $request = new Request('GET', 'http://example.local');
         $curl = $this->curlFormatter->format($request);
@@ -43,7 +46,8 @@ class CurlFormatterTest extends TestCase
         $this->assertEquals("curl 'http://example.local'", $curl);
     }
 
-    public function testSimpleGETWithHeader(): void
+    #[Test]
+    public function simple_get_with_header(): void
     {
         $request = new Request('GET', 'http://example.local', ['foo' => 'bar']);
         $curl = $this->curlFormatter->format($request);
@@ -51,7 +55,8 @@ class CurlFormatterTest extends TestCase
         $this->assertEquals("curl 'http://example.local' -H 'foo: bar'", $curl);
     }
 
-    public function testSimpleGETWithMultipleHeader(): void
+    #[Test]
+    public function simple_get_with_multiple_headers(): void
     {
         $request = new Request('GET', 'http://example.local', ['foo' => 'bar', 'Accept-Encoding' => 'gzip,deflate,sdch']);
         $curl = $this->curlFormatter->format($request);
@@ -59,7 +64,8 @@ class CurlFormatterTest extends TestCase
         $this->assertEquals("curl 'http://example.local' -H 'foo: bar' -H 'Accept-Encoding: gzip,deflate,sdch'", $curl);
     }
 
-    public function testGETWithQueryString(): void
+    #[Test]
+    public function get_with_query_string(): void
     {
         $request = new Request('GET', 'http://example.local?foo=bar');
         $curl = $this->curlFormatter->format($request);
@@ -79,7 +85,8 @@ class CurlFormatterTest extends TestCase
         $this->assertEquals("curl 'http://example.local' -G  -d 'foo=bar&hello=world'", $curl);
     }
 
-    public function testPOST(): void
+    #[Test]
+    public function post(): void
     {
         $body = Utils::streamFor(http_build_query(['foo' => 'bar', 'hello' => 'world'], '', '&'));
 
@@ -90,7 +97,8 @@ class CurlFormatterTest extends TestCase
         $this->assertStringNotContainsString(' -G ', $curl);
     }
 
-    public function testHEAD(): void
+    #[Test]
+    public function head(): void
     {
         $request = new Request('HEAD', 'http://example.local');
         $curl = $this->curlFormatter->format($request);
@@ -98,7 +106,8 @@ class CurlFormatterTest extends TestCase
         $this->assertStringContainsString('--head', $curl);
     }
 
-    public function testOPTIONS(): void
+    #[Test]
+    public function options(): void
     {
         $request = new Request('OPTIONS', 'http://example.local');
         $curl = $this->curlFormatter->format($request);
@@ -106,7 +115,8 @@ class CurlFormatterTest extends TestCase
         $this->assertStringContainsString('-X OPTIONS', $curl);
     }
 
-    public function testDELETE(): void
+    #[Test]
+    public function delete(): void
     {
         $request = new Request('DELETE', 'http://example.local/users/4');
         $curl = $this->curlFormatter->format($request);
@@ -114,7 +124,8 @@ class CurlFormatterTest extends TestCase
         $this->assertStringContainsString('-X DELETE', $curl);
     }
 
-    public function testPUT(): void
+    #[Test]
+    public function put(): void
     {
         $request = new Request('PUT', 'http://example.local', [], Utils::streamFor('foo=bar&hello=world'));
         $curl = $this->curlFormatter->format($request);
@@ -123,7 +134,8 @@ class CurlFormatterTest extends TestCase
         $this->assertStringContainsString('-X PUT', $curl);
     }
 
-    public function testProperBodyReading(): void
+    #[Test]
+    public function proper_body_reading(): void
     {
         $request = new Request('PUT', 'http://example.local', [], Utils::streamFor('foo=bar&hello=world'));
         $request->getBody()->getContents();
@@ -135,7 +147,7 @@ class CurlFormatterTest extends TestCase
     }
 
     #[Test]
-    public function extractBodyArgument(): void
+    public function extract_body_argument(): void
     {
         // clean input of null bytes
         $body = str_replace(chr(0), '', chr(0).'foo=bar&hello=world');
