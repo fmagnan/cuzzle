@@ -1,6 +1,6 @@
-# Cuzzle, cURL command from Guzzle requests
+# Guzzle to cURL converter, generates cURL command from Guzzle requests
 
-[![Build Status](https://travis-ci.org/namshi/cuzzle.svg?branch=master)](https://travis-ci.org/namshi/cuzzle)
+[![Build Status](https://travis-ci.org/fmagnan/guzzle-to-curl-converter.svg?branch=master)](https://travis-ci.org/fmagnan/guzzle-to-curl-converter)
 
 This library lets you dump a Guzzle request to a cURL command for debug and log purpose.
 
@@ -15,7 +15,7 @@ It has been tested using PHP8.3
 You can install the library directly with composer:
 
 ```
-composer require namshi/cuzzle
+composer require fmagnan/guzzle-to-curl-converter
 ```
 
 (Add `--dev` if you don't need it in production environment)
@@ -24,7 +24,7 @@ composer require namshi/cuzzle
 
 ```php
 
-use Namshi\Cuzzle\Formatter\CurlFormatter;
+use GuzzleToCurlConverter\Formatter\CurlFormatter;
 use GuzzleHttp\Message\Request;
 
 $request = new Request('GET', 'example.local');
@@ -40,7 +40,7 @@ To log the cURL request generated from a Guzzle request, simply add CurlFormatte
 
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
-use Namshi\Cuzzle\Middleware\CurlFormatterMiddleware;
+use GuzzleToCurlConverter\Middleware\CurlFormatterMiddleware;
 use Monolog\Logger;
 use Monolog\Handler\TestHandler;
 

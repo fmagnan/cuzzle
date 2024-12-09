@@ -1,6 +1,6 @@
 {
-  "name": "namshi/cuzzle",
-  "description": "Get the cURL shell command from a Guzzle request",
+  "name": "fmagnan/guzzle-to-curl-converter",
+  "description": "Converts a Guzzle request into a cURL command",
   "require": {
     "php": ">=8.3",
     "guzzlehttp/guzzle": "^7.0",
@@ -22,20 +22,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Namshi\\Cuzzle\\": "src/",
-      "Namshi\\Cuzzle\\Test\\" : "tests/"
+      "GuzzleToCurlConverter\\": "src/",
+      "GuzzleToCurlConverter\\Test\\" : "tests/"
     }
   },
   "license": "MIT",
   "authors": [
-    {
-      "name": "cirpo",
-      "email": "alessandro.cinelli@gmail.com"
-    },
-    {
-      "name": "Nikita Nefedov",
-      "email": "inefedor@gmail.com"
-    },
     {
       "name": "Franck Magnan",
       "email": "fmagnan@vivaldi.net"

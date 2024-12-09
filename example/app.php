@@ -3,9 +3,9 @@
 require '../vendor/autoload.php';
 
 use GuzzleHttp\Client;
+use GuzzleToCurlConverter\Subscriber\CurlFormatterSubscriber;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
-use Namshi\Cuzzle\Subscriber\CurlFormatterSubscriber;
 
 $logger = new Logger('guzzele.to.curl'); // initialize the logger
 $testHandler = new TestHandler(); // test logger handler

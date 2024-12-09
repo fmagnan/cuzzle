@@ -1,8 +1,8 @@
 <?php
 
-namespace Namshi\Cuzzle\Middleware;
+namespace GuzzleToCurlConverter\Middleware;
 
-use Namshi\Cuzzle\Formatter\CurlFormatter;
+use GuzzleToCurlConverter\Formatter\CurlFormatter;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
 

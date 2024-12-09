@@ -1,6 +1,6 @@
 <?php
 
-namespace Namshi\Cuzzle\Formatter;
+namespace GuzzleToCurlConverter\Formatter;
 
 use GuzzleHttp\Cookie\CookieJarInterface;
 use GuzzleHttp\Cookie\SetCookie;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Namshi\Cuzzle\Test\Formatter;
+namespace GuzzleToCurlConverter\Test\Formatter;
 
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
-use Namshi\Cuzzle\Formatter\CurlFormatter;
+use GuzzleToCurlConverter\Formatter\CurlFormatter;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

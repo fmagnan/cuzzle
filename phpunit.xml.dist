@@ -11,7 +11,7 @@
 >
 
   <testsuites>
-    <testsuite name="cuzzle">
+    <testsuite name="guzzle-to-curl-converter">
       <directory>tests</directory>
     </testsuite>
   </testsuites>

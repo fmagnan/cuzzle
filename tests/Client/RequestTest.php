@@ -1,11 +1,11 @@
 <?php
 
-namespace Namshi\Cuzzle\Test\Client;
+namespace GuzzleToCurlConverter\Test\Client;
 
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
-use Namshi\Cuzzle\Formatter\CurlFormatter;
+use GuzzleToCurlConverter\Formatter\CurlFormatter;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

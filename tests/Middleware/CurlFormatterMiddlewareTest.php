@@ -1,12 +1,12 @@
 <?php
 
-namespace Namshi\Cuzzle\Test\Middleware;
+namespace GuzzleToCurlConverter\Test\Middleware;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use Namshi\Cuzzle\Middleware\CurlFormatterMiddleware;
+use GuzzleToCurlConverter\Middleware\CurlFormatterMiddleware;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
