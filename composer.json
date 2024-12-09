@@ -8,7 +8,16 @@
     "guzzlehttp/psr7": "^2.7"
   },
   "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.65",
+    "phpstan/phpstan": "^2.0",
     "phpunit/phpunit": "^11.0"
+  },
+  "config": {
+    "preferred-install": {
+      "*": "dist"
+    },
+    "sort-packages": true,
+    "bin-dir": "bin"
   },
   "autoload": {
     "psr-4": {
@@ -25,6 +34,10 @@
     {
       "name": "Nikita Nefedov",
       "email": "inefedor@gmail.com"
+    },
+    {
+      "name": "Franck Magnan",
+      "email": "fmagnan@vivaldi.net"
     }
   ],
   "extra": {

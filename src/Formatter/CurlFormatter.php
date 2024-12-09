@@ -7,8 +7,7 @@ use GuzzleHttp\Cookie\SetCookie;
 use Psr\Http\Message\RequestInterface;
 
 /**
- * Class CurlFormatter it formats a Guzzle request to a cURL shell command
- * @package Namshi\Cuzzle\Formatter
+ * Class CurlFormatter it formats a Guzzle request to a cURL shell command.
  */
 class CurlFormatter
 {
@@ -20,7 +19,7 @@ class CurlFormatter
 
     protected int $commandLineLength;
 
-    function __construct(int $commandLineLength = 100)
+    public function __construct(int $commandLineLength = 100)
     {
         $this->commandLineLength = $commandLineLength;
     }
@@ -48,7 +47,7 @@ class CurlFormatter
     {
         if (isset($this->options[$name])) {
             if (!is_array($this->options[$name])) {
-                $this->options[$name] = (array)$this->options[$name];
+                $this->options[$name] = (array) $this->options[$name];
             }
             $this->options[$name][] = $value;
         } else {
@@ -97,7 +96,7 @@ class CurlFormatter
 
         $contents = $body->getContents();
 
-        if ($body->isSeekable()) {
+        if ($body->isSeekable() && isset($previousPosition)) {
             $body->seek($previousPosition);
         }
 
@@ -107,7 +106,7 @@ class CurlFormatter
             $this->addOption('d', escapeshellarg($contents));
         }
 
-        //if get request has data Add G otherwise curl will make a post request
+        // if get request has data Add G otherwise curl will make a post request
         if (!empty($this->options['d']) && ('GET' === $request->getMethod())) {
             $this->addOption('G');
         }
@@ -128,10 +127,9 @@ class CurlFormatter
 
         /** @var SetCookie $cookie */
         foreach ($options['cookies'] as $cookie) {
-            if ($cookie->matchesPath($path) && $cookie->matchesDomain($host) &&
-                !$cookie->isExpired() && (!$cookie->getSecure() || $scheme == 'https')) {
-
-                $values[] = $cookie->getName() . '=' . $cookie->getValue();
+            if ($cookie->matchesPath($path) && $cookie->matchesDomain($host)
+                && !$cookie->isExpired() && (!$cookie->getSecure() || 'https' == $scheme)) {
+                $values[] = $cookie->getName().'='.$cookie->getValue();
             }
         }
 
@@ -154,7 +152,7 @@ class CurlFormatter
                 continue;
             }
 
-            foreach ((array)$header as $headerValue) {
+            foreach ((array) $header as $headerValue) {
                 $this->addOption('H', escapeshellarg("{$name}: {$headerValue}"));
             }
         }
@@ -192,8 +190,8 @@ class CurlFormatter
         return $this;
     }
 
-    protected function extractUrlArgument(RequestInterface $request) : self
+    protected function extractUrlArgument(RequestInterface $request): self
     {
-        return $this->addCommandPart(escapeshellarg((string)$request->getUri()->withFragment('')));
+        return $this->addCommandPart(escapeshellarg((string) $request->getUri()->withFragment('')));
     }
 }

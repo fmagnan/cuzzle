@@ -9,7 +9,7 @@
          displayDetailsOnTestsThatTriggerWarnings="true"
          displayDetailsOnPhpunitDeprecations="true"
 >
-  
+
   <testsuites>
     <testsuite name="cuzzle">
       <directory>tests</directory>

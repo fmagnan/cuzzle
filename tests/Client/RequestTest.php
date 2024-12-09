@@ -18,7 +18,8 @@ class RequestTest extends TestCase
         $this->curlFormatter = new CurlFormatter();
     }
 
-    public function testGetWithCookies() : void
+    #[Test]
+    public function get_with_cookies(): void
     {
         $request = new Request('GET', 'http://local.example');
         $jar = CookieJar::fromArray(['Foo' => 'Bar', 'identity' => 'xyz'], 'local.example');
@@ -29,7 +30,7 @@ class RequestTest extends TestCase
     }
 
     #[Test]
-    public function post() : void
+    public function post(): void
     {
         $request = new Request('POST', 'http://local.example', [], Utils::streamFor('foo=bar&hello=world'));
         $curl = $this->curlFormatter->format($request);
@@ -37,7 +38,7 @@ class RequestTest extends TestCase
         $this->assertStringContainsString("-d 'foo=bar&hello=world'", $curl);
     }
 
-    public function testPUT() : void
+    public function testPUT(): void
     {
         $request = new Request('PUT', 'http://local.example', [], Utils::streamFor('foo=bar&hello=world'));
         $curl = $this->curlFormatter->format($request);
@@ -46,7 +47,7 @@ class RequestTest extends TestCase
         $this->assertStringContainsString('-X PUT', $curl);
     }
 
-    public function testDELETE() : void
+    public function testDELETE(): void
     {
         $request = new Request('DELETE', 'http://local.example');
         $curl = $this->curlFormatter->format($request);
@@ -54,7 +55,7 @@ class RequestTest extends TestCase
         $this->assertStringContainsString('-X DELETE', $curl);
     }
 
-    public function testHEAD() : void
+    public function testHEAD(): void
     {
         $request = new Request('HEAD', 'http://local.example');
         $curl = $this->curlFormatter->format($request);
@@ -62,7 +63,7 @@ class RequestTest extends TestCase
         $this->assertStringContainsString("curl 'http://local.example' --head", $curl);
     }
 
-    public function testOPTIONS() : void
+    public function testOPTIONS(): void
     {
         $request = new Request('OPTIONS', 'http://local.example');
         $curl = $this->curlFormatter->format($request);
